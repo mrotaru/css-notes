@@ -20,7 +20,7 @@ Notes on reading [CSS: The Definitive Guide](http://amzn.eu/6m7B078)
 - can link stylesheets with the `Link` header; config is web-server dependend; FF/Opera
 
 ### CSS Rule Structure
-- `<selector>: { <property>: <value>; }
+- `<selector>: { <property>: <value>; }`
 - each `<property>: <value>;` tuple constitutes a "declaration"
 - in general, CSS is whitespace-insensitive
 - comments are removed before parsing; do not count on them for whitespace
@@ -30,7 +30,7 @@ Notes on reading [CSS: The Definitive Guide](http://amzn.eu/6m7B078)
 - `media` attr of a `style` element
 - `media` descriptor portion of an `@import` statement
 - `media` descriptor portion of a @media declaration
-- `<link href="a.css" media="print and (color), screen and (color-depth: 8)" rel="stylesheet" />
+- `<link href="a.css" media="print and (color), screen and (color-depth: 8)" rel="stylesheet" />`
 - `@import url(print-color.css) print and (color), screen and (color-depth: 8);
 - in the two exaples above, if _any_ of the queries evaluates to true, the stylesheet is applied
 - can use `and` and `not`, but `not` can only be used in the begginning of a query
