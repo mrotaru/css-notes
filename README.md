@@ -2,7 +2,7 @@
 
 Notes on reading [CSS: The Definitive Guide](http://amzn.eu/6m7B078)
 
-## 1. CSS and Documents
+## Chapter 1 - CSS and Documents
 - `img`, `input` are _replaced_ elements; most are _nonreplaced_
 
 ### Display
@@ -40,3 +40,13 @@ Notes on reading [CSS: The Definitive Guide](http://amzn.eu/6m7B078)
 - `@supports (display: grid) { ... }` - applies if what is between parens is understood/supported
 - `@supports not (display: grid)` - apply rules when something is _not_ understood
 - `@supports (shape-outside: circle()) or (-webkit-shape-outside: circle()) { ... }`
+
+## Chapter 12 - Flexible Box Layout
+- can alter order; but screen readers still read in source order (for now, at least)
+- flex containers can be block or inline
+- `display: flex` == `display: flex block`
+- `display: flex inline` == `display: inline-flex`
+- **only immediage children are _flexed_**
+- flexbox is intended for single-dimensional content distribution, not grid-like layouts
+- by default, non-fitting items don't wrap; they shrink if allowed by `flex` prop, and/or overflow
+- `flex-wrap` - controls whether the flex container is limited to being single-line
