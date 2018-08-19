@@ -42,6 +42,7 @@ Notes on reading [CSS: The Definitive Guide](http://amzn.eu/6m7B078)
 - `@supports (shape-outside: circle()) or (-webkit-shape-outside: circle()) { ... }`
 
 ## Chapter 12 - Flexible Box Layout
+- spec: https://www.w3.org/TR/css-flexbox-1/
 - can alter order; but screen readers still read in source order (for now, at least)
 - flex containers can be block or inline
 - `display: flex` == `display: flex block`
@@ -50,3 +51,17 @@ Notes on reading [CSS: The Definitive Guide](http://amzn.eu/6m7B078)
 - flexbox is intended for single-dimensional content distribution, not grid-like layouts
 - by default, non-fitting items don't wrap; they shrink if allowed by `flex` prop, and/or overflow
 - `flex-wrap` - controls whether the flex container is limited to being single-line
+- `flex-flow` - combines `flex-direction` and `flex-wrap`
+
+### Distribution Inside the Flex Container
+- `justify-content`: flex _items_ in a flex line, along **main** axis; `flex-start/end`, `space-between/around/evenly`, `center`
+- `align-items`: flex _items_ along the **cross** axis of **each flex line**; `stretch`, `flex-start/end`, `center`, `baseline`
+- if a flex item has an explicit dimension set, it is not "stretchable"
+- the stretched dimension includes the margin
+- `align-content`: flex _lines_ along the **cross** axis of the flex container
+
+### Flexing
+- `flex`: shorthand for `flex-grow`, `flex-shrink` and `flex-basis`; default: `0 1 auto`
+- shorthand is strongly recommended over sub-properties
+- percentages are valid values only for `flex-basis` and are relative to element's parent's inner main-axis size
+- **shrinking is also proportional to the width**; growing is not
