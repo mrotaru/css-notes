@@ -59,9 +59,17 @@ Notes on reading [CSS: The Definitive Guide](http://amzn.eu/6m7B078)
 - if a flex item has an explicit dimension set, it is not "stretchable"
 - the stretched dimension includes the margin
 - `align-content`: flex _lines_ along the **cross** axis of the flex container
+- the "stretch budget" is distributed equally among the items, regardless of their relative sizes
+- `float` is ignored
+- `position: absolute` - takes the element out of flow; `align-self: center` => middle of flex container parent's cross axis
+- `min-width` is `auto` for flex items; for most other elements, it is `0`
 
 ### Flexing
 - `flex`: shorthand for `flex-grow`, `flex-shrink` and `flex-basis`; default: `0 1 auto`
+- flex items will not shrink to less than border, padding and margins combined
 - shorthand is strongly recommended over sub-properties
+- `width` or `height` is ignored - whichever corresponds to the main axis; even with `!important`
 - percentages are valid values only for `flex-basis` and are relative to element's parent's inner main-axis size
 - **shrinking is also proportional to the width**; growing is not
+- when both `width` and `flex-basis`, `flex-basis` wins in determining width
+- `flex basis` - when percent, it is relative to flex container's size
