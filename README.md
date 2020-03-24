@@ -43,25 +43,29 @@ Notes on reading [CSS: The Definitive Guide](http://amzn.eu/6m7B078)
 
 ## Chapter 12 - Flexible Box Layout
 - spec: https://www.w3.org/TR/css-flexbox-1/
+- box model: https://drafts.csswg.org/css-flexbox-1/#box-model
 - can alter order; but screen readers still read in source order (for now, at least)
 - flex containers can be block or inline
 - `display: flex` == `display: flex block`
 - `display: flex inline` == `display: inline-flex`
-- **only immediage children are _flexed_**
+- **only immediate children are _flexed_**
 - flexbox is intended for single-dimensional content distribution, not grid-like layouts
 - by default, non-fitting items don't wrap; they shrink if allowed by `flex` prop, and/or overflow
 - `flex-wrap` - controls whether the flex container is limited to being single-line
 - `flex-flow` - combines `flex-direction` and `flex-wrap`
 
 ### Distribution Inside the Flex Container
-- `justify-content`: flex _items_ in a flex line, along **main** axis; `flex-start/end`, `space-between/around/evenly`, `center`
-- `align-items`: flex _items_ along the **cross** axis of **each flex line**; `stretch`, `flex-start/end`, `center`, `baseline`
+- `justify-content`: _items_ in a flex line, along **main** axis; `flex-start/end`, `space-between/around/evenly`, `center`
+- [`align-items`](https://drafts.csswg.org/css-flexbox-1/#align-items-property): _items_ along the **cross** axis of **each flex line**; `stretch`, `flex-start/end`, `center`, `baseline`
+- [`align-self`](https://drafts.csswg.org/css-flexbox-1/#align-items-property): override `alight-items` for particular items; values available are the same (`stretch`, ...) but default is `auto`
+- [`align-content`](https://drafts.csswg.org/css-flexbox-1/#align-content-property): _lines_ along the **cross** axis of the flex container; **`stretch`**, `start`, `center`, `space-between`, `space-around`
 - if a flex item has an explicit dimension set, it is not "stretchable"
 - the stretched dimension includes the margin
-- `align-content`: flex _lines_ along the **cross** axis of the flex container
 - the "stretch budget" is distributed equally among the items, regardless of their relative sizes
+- text nodes get wrapped in an anonymous flex item
+- whitespace is removed
 - `float` is ignored
-- `position: absolute` - takes the element out of flow; `align-self: center` => middle of flex container parent's cross axis
+- `position: absolute` - takes the element out of flow
 - `min-width` is `auto` for flex items; for most other elements, it is `0`
 
 ### Flexing
