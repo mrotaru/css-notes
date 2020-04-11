@@ -92,6 +92,61 @@ Notes on reading [CSS: The Definitive Guide](http://amzn.eu/6m7B078)
 - https://www.w3.org/TR/CSS22/box.html
 - describes the rectangular boxes that are generated for HTML elements
 - from center: content area → padding → border → margin
+#### `box-sizing`
+- initial: `content-box`
+- determine the meaning of `width` and `height` (measure)
+- `content-box`: measure refers to the _content box_ - so doesn't include padding, border and margins
+- `padding-box`: in addition to the content box, measure includes the padding
+- `border-box`: in addition to the content box _and_ padding, measure includes the border
+- lemma 1: sum of horizontal components (margin L+R, border L+R, padding L+R, content width) of a block box in normal flow == width of containing block
+
+#### `auto`
+- only 3 horizontal components can be `auto`: `width` and the two margin components (L+R)
+- if one of them is `auto`, it will be sized according to lemma 1 - so that the sum of the components equals the containers width
+- if an "impossible" combination is specified - for example, the sum of the components is less than the containers width - then the right margin will be automatically set to `auto` ([example](http://meyerweb.github.io/csstdg4figs/07-basic-visual-formatting/horizontal-formatting-overriding-right-margin.html))
+- if `width` is `auto` and margins are fixed, content area will be stretched to fill available space
+- `auto` semantics not affected by the value of `box-sizing`
+- if both margins are `auto`, they are both of equal lengths - thus centering the element within the parent
+- in normal flow equal-length margins is the correct way of centering elements
+- if one of the margins is `auto` and `width` is also `auto`, the margin is reduced to zero with content "stretched" to cover the left-over space ([example](http://meyerweb.github.io/csstdg4figs/07-basic-visual-formatting/horizontal-formatting-auto-width-and-left.html))
+- if all three are `auto`, margins are set to 0 with content expanding over all available space
+- if `width` is `auto` and a margin is negative, can result in width greater than the container (lemma 1)
+- margins are the only box dimensions that can be negative
+- if applied to a replaced element, a `width` of `auto` translates to the replaced elements intrinsic width
+  - if a length is specified for `width`, the replaced elements height will be scaled in proportion
+
+#### Percentages
+- relative to the containers content area width
+- lemma 1 still applies
+- borders cannot have percentage values; this complicates precise layout when using both percentages and borders
+- in general, mixing percentages with length units can cause issues if they don't add up exactly
+
+### Vertical Formatting
+- element content determines default height - can be influenced by `width`
+- height can be adjusted; if that does not leave enough space for the content, `overflow` comes into play
+- by default, `height` defines the height of the _content area_ (much like `width`)
+- the sum of vertical components == height of containing block
+- `height` and margins can be `auto`
+- a margin that is `auto` will be set to 0 (block box, normal flow) - which is why **you can't vertically center**
+  - vertical `auto` margins treated differently for positioned elements (not in normal flow)
+- vertical padding and borders default to 0 
+- percentage height is calculated wrt containing blocks height
+- vertical percentage margins are calculated wrt elements **width** (!)
+- if containers height is not explicitly declared, percentage heights are `auto`
+
+#### `auto`
+- block box in normal flow will be just high enough to enclose inner inline content
+- if NFBB has only BB children, height is distance from top BB child's top border edge to bottom BB child's bottom border edge (_margins not included !_)
+- if a container has padding, or top/bottom borders, its height encloses margins as well
+
+#### Margin Collapsing
+- margins of vertically adjacent BBNF will "collapse"
+- if margins "overflow" (due to `auto` height and no padding/borders) then you can have more than 2 margins collapsing
+- of all the collapsing margins, the longest one is used
+- to prevent one particular elements margins from "overflowing" (and becoming eligible for collapsing) add padding and/or top/bottom border
+- adjoining negative margin is _added_ to positive; if multiple, the "most negative" is added to "most positive"
+- in [this example](http://meyerweb.github.io/csstdg4figs/07-basic-visual-formatting/negative-margins-collapsing-top-margin-effects.html):
+  - if we remove the border and padding from the `div`, if will fully enclose the `p` - but `p`s negative top margin will still "overflow" and cancel out the `div`s top margin; if `p`s margin gets even more negative, will move the whole `div` upwards
 
 ## Chapter 12 - Flexible Box Layout
 - spec: https://www.w3.org/TR/css-flexbox-1/
