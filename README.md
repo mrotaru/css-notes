@@ -141,12 +141,102 @@ Notes on reading [CSS: The Definitive Guide](http://amzn.eu/6m7B078)
 
 #### Margin Collapsing
 - margins of vertically adjacent BBNF will "collapse"
-- if margins "overflow" (due to `auto` height and no padding/borders) then you can have more than 2 margins collapsing
+- if margins "overhang" (due to `auto` height and no padding/borders) then you can have more than 2 margins collapsing
 - of all the collapsing margins, the longest one is used
-- to prevent one particular elements margins from "overflowing" (and becoming eligible for collapsing) add padding and/or top/bottom border
+- to prevent one particular elements margins from "overhanging" (and becoming eligible for collapsing) add padding and/or top/bottom border
 - adjoining negative margin is _added_ to positive; if multiple, the "most negative" is added to "most positive"
 - in [this example](http://meyerweb.github.io/csstdg4figs/07-basic-visual-formatting/negative-margins-collapsing-top-margin-effects.html):
-  - if we remove the border and padding from the `div`, if will fully enclose the `p` - but `p`s negative top margin will still "overflow" and cancel out the `div`s top margin; if `p`s margin gets even more negative, will move the whole `div` upwards
+  - if we remove the border and padding from the `div`, if will fully enclose the `p` - but `p`s negative top margin will still "overhang" and cancel out the `div`s top margin; if `p`s margin gets even more negative, will move the whole `div` upwards
+
+#### Lists
+- whether list item marker is placed inside or outside controlled by [`list-style-position`](https://drafts.csswg.org/css-lists-3/#list-style-position-property); initial: `outside`
+- if `outside`, then the marker is not part of the list item content box
+- if `inside`, the list item behaves exactly like a block box
+- distance between marker and content cannot be changed
+- a couple of relevant specs in draft stage:
+  - [CSS Pseudo-Elements Module Level 4](https://drafts.csswg.org/css-pseudo-4/)
+  - [CSS Lists Module Level 3](https://drafts.csswg.org/css-lists-3/)
+
+### Inline Elements
+- WD: [CSS Inline Layout Module Level 3](https://www.w3.org/TR/css-inline-3/)
+  > This module defines the CSS Inline Layout model, replacing and extending the model as defined in CSS2.1. It is very much a work-in-progress, and implementers should reference CSS2.1 for now.
+- content is broken up into lines
+- border is drawn just _outside_ line content; borders of successive lines slightly overlap (assuming no margin); padding aggravates this
+- alignment of lines controlled with [`text-align`](https://drafts.csswg.org/css-text-3/#text-align-property) (`left`/**`start`**, `right`/`end`, `center`, `justify`)
+- with `justify`, lines are stretched so that their edges touch the content edges of the container; to achieve this, space is inserted between letters and words
+- non-replaced: padding, borders and margins do not affect the generated box (and therefore the line box)
+- replaced: borders and margins **do** affect the generated box (and therefore the line box)
+- inline boxes are vertically aligned in their respective line box according to `vertical-align`
+
+#### Definitions
+- anonymous text → text not inside a tag (including spaces)
+- em box → defined in the font ([draft](https://drafts.csswg.org/css-values-3/#font-relative-lengths))
+  - characters are generally smaller than the em box; cursive glyphs are generally _larger_
+- content area → union of em boxes of contained characters
+- leading → `line-height` - `font-size`; applied to top/bottom (half-leading); only applied to non-replaced els
+- inline box → content area + leading
+- line box → as small as it needs to be to contain all _inline boxes_ (not necessarily the content area)
+
+#### Inline Formatting
+- WD: https://www.w3.org/TR/CSS22/visuren.html#inline-formatting
+- for `line-height`s default value, `normal`, UAs generally multiply a constant (~1.2) with the elements `font-size` ([MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/line-height))
+- all elements have `line-height` even if not explicitly declared; it does not influence block-level elements directly
+- `line-height` on a block element applies to its inline children and denotes the _minimum_ height for each line box
+- contents of an inline box do not influence its `line-height`
+- for inline, non-replaced els & anon text, `font-size` ⇒ height of content area
+- content area + leading(s) = inline box
+- difference between `line-height` and `font-size` is divided between the top and bottom as leading
+  - it can be negative, which leads to a reduced inline box; it can become smaller than the content area
+  - by default, the inline box will be centered inside the content area
+- height of a line box is defined by the topmost and lowest inline box edges of contained inline boxes
+  - this can lead to the content of some (visual) lines "bleeding" into other lines ([example](http://meyerweb.github.io/csstdg4figs/07-basic-visual-formatting/inline-nonreplaced-inline-boxes-in-p.html))
+
+#### Vertical Alignment
+- WD re. `line-height` and `vertical-align`: https://www.w3.org/TR/CSS22/visudet.html#line-height
+- by default, inline boxes are vertically aligned by `baseline`
+- UAs generally expect `baseline` information to be contained in the font
+- when `vertical-align` is a positive length, will push content area and inline box upwards, therefore increasing the height of the line box (unless there is another element with a higher height)
+- if percentage, it's relative to `line-height`
+- `middle` - aligns the inline box such that its middle is `0.5ex` above parents baseline
+  - > `ex` represents the x-height of the element's font. On fonts with the "x" letter, this is generally the height of lowercase letters in the font; 1ex ≈ 0.5em in many fonts. ([MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/length#ex))
+- `top/bottom` - aligns the elements inline block edge with the containing _line box_
+- `super/sub` - moves the content area and the inline box up/down; distance is UA-specific
+- `text-top/text-bottom` - aligns edge of elements inline box w. parents _content area_
+- top/bottom margins are essentially ignored
+- borders are drawn just outside the content edge - do not interact with `line-height`
+- padding and left/right margins are applied as if the element was on a single line - even when it's split
+- padding, borders and margins do not affect the line box's height
+- background colour covers padding; and since padding boxes can overlap, this can lead to visual artifacts ([example](http://meyerweb.github.io/csstdg4figs/07-basic-visual-formatting/adding-box-props-overlapping-inline-backgrounds.html))
+
+#### `box-decoration-break`
+- ED: https://drafts.csswg.org/css-break-3/#break-decoration
+- MDN: https://developer.mozilla.org/en-US/docs/Web/CSS/box-decoration-break
+- initial value: `slice`
+- if `slice`, the element is laid out as a single box and then simply sliced into line lengths; this includes box properties (padding, border, margin) but also visual aspects like the background, shadows, etc
+- `clone` essentially creates a new box whenever a break in encountered
+
+### Inline Replaced Elements
+- box properties are part of inline box (unlike non-replaced inline els) and influence line box
+- assumed to have an intrinsic width/height, which can affect line box but not `line-height`
+- the `line-height`, either inherited or set on the element, does not influence its inline box
+- `line-height` (_not_ the intrinsic height) is used when vertically aligning using percentages
+- line box will be sized such that it contains the element **and** its box properties (padding, border, margins) 
+- negative margins decrease inline box and can cause content bleed
+- replaced els don't have their own baseline, so they just sit ontop of the existing baseline
+  - this happens even when there's no text; ex: if an image is the sole child of a `div`, it will _still_ sit on the baseline
+  - to avoid this, make the image `block` so that it doesn't generate an inline box
+
+### `display`
+- [CSS Display Module Level 3]() (ED) defines the two-value syntax for `display` ([MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/display/two-value_syntax_of_display))
+- first value is the **outer** (external) display type, the second one is the **inner** display type
+- in the ED, `inline-block` is the legacy one-value equivalent to `inline flow-root` ([ED](https://drafts.csswg.org/css-display/#valdef-display-inline-block))
+- `inline-block` generates a block layout context internally, but externally it acts as an inline replaced element
+  - can have `width` and `height` (which inline elements cannot) and these measures will influence the line box
+- `contents` value causes the outermost ("wrapper") element to be omitted - along with its box properties
+  - essentially, it "unwraps" the content area
+
+#### Ref
+- WD: [CSS Text Module Level 3](https://www.w3.org/TR/css-text-3/)
 
 ## Chapter 12 - Flexible Box Layout
 - spec: https://www.w3.org/TR/css-flexbox-1/
